@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#7657e8">
+<title>Knowli - Learn Smarter</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f6f4ff;color:#27213d}
+header{background:#7657e8;color:white;text-align:center;padding:25px 15px;border-radius:0 0 25px 25px}
+.logo{font-size:34px;font-weight:bold}
+header p{margin-bottom:0}
+main{max-width:650px;margin:auto;padding:18px}
+.card{background:white;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 3px 12px #30206012}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:14px}
+.tile{background:white;color:#27213d;min-height:120px;box-shadow:0 3px 12px #30206012}
+.tile span{display:block;font-size:30px;margin-bottom:8px}
+.primary{background:#7657e8;color:white;width:100%;margin-top:10px}
+.choice{display:block;width:100%;text-align:left;background:#f0edff;margin:9px 0;color:#27213d}
+button:active{opacity:.8}
+.back{background:transparent;color:#7657e8;padding:5px 0}
+.hidden{display:none}
+.muted{color:#716b83;line-height:1.6}
+footer{text-align:center;padding:20px;color:#716b83;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">✦ Knowli</div>
+<p>Learn smarter, one step at a time.</p>
+</header>
+
+<main>
+<section id="home">
+<div class="card">
+<h2>Welcome, learner! 👋</h2>
+<p class="muted">Discover new things, challenge your brain, and grow your knowledge every day.</p>
+<strong>✨ Your next learning adventure starts here!</strong>
+</div>
+<h3>What do you want to do?</h3>
+<div class="grid">
+<button class="tile" onclick="openPage('lessons')"><span>📚</span><b>Lessons</b><br><small>Learn new things</small></button>
+<button class="tile" onclick="openPage('quiz')"><span>🧠</span><b>Quick Quiz</b><br><small>Test yourself</small></button>
+<button class="tile" onclick="openPage('game')"><span>🎮</span><b>Brain Games</b><br><small>Play and learn</small></button>
+<button class="tile" onclick="openPage('friends')"><span>👥</span><b>Study Together</b><br><small>Learn with friends</small></button>
+</div>
+</section>
+
+<section id="lessons" class="card hidden">
+<button class="back" onclick="openPage('home')">← Home</button>
+<h2>📚 Explore Lessons</h2>
+<p>Choose a subject:</p>
+<button class="choice" onclick="showLesson('math')">➗ Mathematics</button>
+<button class="choice" onclick="showLesson('science')">🔬 Science</button>
+<button class="choice" onclick="showLesson('english')">✍️ English</button>
+<div id="lessonContent"></div>
+</section>
+
+<section id="quiz" class="card hidden">
+<button class="back" onclick="openPage('home')">← Home</button>
+<h2>🧠 Quick Quiz</h2>
+<div id="question"></div>
+<div id="answers"></div>
+<p id="feedback" aria-live="polite"></p>
+<button id="next" class="primary hidden" onclick="nextQuestion()">Next question →</button>
+<p id="points"></p>
+</section>
+
+<section id="game" class="card hidden">
+<button class="back" onclick="openPage('home')">← Home</button>
+<h2>🎮 Brain Game</h2>
+<p><b>What has pages but isn't a website?</b></p>
+<button class="choice" onclick="gameAnswer(false)">A. A cloud</button>
+<button class="choice" onclick="gameAnswer(true)">B. A book</button>
+<button class="choice" onclick="gameAnswer(false)">C. A shoe</button>
+<p id="gameFeedback" aria-live="polite"></p>
+<button class="primary" onclick="resetGame()">Play again</button>
+</section>
+
+<section id="friends" class="card hidden">
+<button class="back" onclick="openPage('home')">← Home</button>
+<h2>👥 Study Together</h2>
+<p class="muted">Imagine learning with friends, taking on quiz challenges, and celebrating your progress together!</p>
+<h3>Coming soon</h3>
+<ul>
+<li>Invite friends</li>
+<li>Challenge friends to quizzes</li>
+<li>Study together</li>
+<li>Ask questions and share knowledge</li>
+</ul>
+<p class="muted">These social features need a secure online service and user accounts before they can work.</p>
+</section>
+</main>
+
+<footer>✦ Knowli · Learning can be fun!</footer>
+
+<script>
+const pages=['home','lessons','quiz','game','friends'];
+
+function openPage(id){
+pages.forEach(page=>{
+document.getElementById(page).classList.toggle('hidden',page!==id);
+});
+if(id==='quiz') startQuiz();
+window.scrollTo(0,0);
+}
+
+const lessonData={
+math:{
+title:'Mathematics: Fractions',
+text:'A fraction represents part of a whole. The numerator is the top number. The denominator is the bottom number.',
+example:'Example: 1/2 + 1/2 = 1 whole.'
+},
+science:{
+title:'Science: The Water Cycle',
+text:'The Sun heats water, causing evaporation. Water vapor cools into clouds through condensation. Then precipitation brings water back to Earth.',
+example:'Remember: Evaporation → Condensation → Precipitation.'
+},
+english:{
+title:'English: Sentences',
+text:'A complete sentence expresses a complete thought. It usually contains a subject and a verb.',
+example:'Example: The student reads. Student is the subject; reads is the verb.'
+}
+};
+
+function showLesson(subject){
+const item=lessonData[subject];
+document.getElementById('lessonContent').innerHTML=
+'<h3>'+item.title+'</h3><p>'+item.text+'</p><p><b>'+item.example+'</b></p>';
+}
+
+const questions=[
+{q:'What is 25% of 80?',a:['10','20','25','40'],correct:1,explanation:'25% is one quarter. 80 divided by 4 equals 20.'},
+{q:'Which planet is called the Red Planet?',a:['Venus','Jupiter','Mars','Mercury'],correct:2,explanation:'Mars looks reddish because of iron oxide on its surface.'},
+{q:'Which word is a verb?',a:['Quickly','Happiness','Run','Blue'],correct:2,explanation:'A verb describes an action or state. Run is an action.'},
+{q:'What is the chemical formula for water?',a:['CO2','H2O','O2','NaCl'],correct:1,explanation:'A water molecule contains two hydrogen atoms and one oxygen atom.'},
+{q:'What is 9 × 7?',a:['56','63','72','49'],correct:1,explanation:'Nine groups of seven equal 63.'}
+];
+
+let current=0;
+let score=0;
+let answered=false;
+
+function startQuiz(){
+current=0;
+score=0;
+renderQuestion();
+}
+
+function renderQuestion(){
+answered=false;
+const q=questions[current];
+document.getElementById('question').innerHTML=
+'<h3>Question '+(current+1)+' of '+questions.length+'</h3><p>'+q.q+'</p>';
+const area=document.getElementById('answers');
+area.innerHTML='';
+q.a.forEach((answer,index)=>{
+const button=document.createElement('button');
+button.className='choice';
+button.textContent=String.fromCharCode(65+index)+'. '+answer;
+button.onclick=()=>checkAnswer(index);
+area.appendChild(button);
+});
+document.getElementById('feedback').textContent='';
+document.getElementById('next').classList.add('hidden');
+document.getElementById('points').textContent='⭐ Points: '+score;
+}
+
+function checkAnswer(index){
+if(answered)return;
+answered=true;
+const q=questions[current];
+if(index===q.correct){
+score++;
+document.getElementById('feedback').textContent='✅ Correct! '+q.explanation;
+}else{
+document.getElementById('feedback').textContent='💡 The correct answer is '+q.a[q.correct]+'. '+q.explanation;
+}
+document.getElementById('points').textContent='⭐ Points: '+score;
+document.getElementById('next').textContent=current===questions.length-1?'See results →':'Next question →';
+document.getElementById('next').classList.remove('hidden');
+}
+
+function nextQuestion(){
+if(current<questions.length-1){
+current++;
+renderQuestion();
+}else{
+document.getElementById('question').innerHTML='<h3>🎉 Quiz complete!</h3><p>You scored '+score+' out of '+questions.length+'.</p>';
+document.getElementById('answers').innerHTML='';
+document.getElementById('feedback').textContent=score===questions.length?'Perfect score! Amazing work!':'Great effort! Keep practicing and try again.';
+document.getElementById('next').textContent='Try again';
+document.getElementById('next').onclick=startQuiz;
+document.getElementById('points').textContent='⭐ Final score: '+score;
+}
+}
+
+function gameAnswer(correct){
+document.getElementById('gameFeedback').textContent=correct?'🎉 Correct! A book has pages.':'Not quite! Try thinking of something you read.';
+}
+
+function resetGame(){
+document.getElementById('gameFeedback').textContent='';
+}
+
+</script>
+</body>
+</html>
